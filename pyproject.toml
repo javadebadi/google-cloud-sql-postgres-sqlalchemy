@@ -94,6 +94,7 @@ warn_return_any = true
 warn_unused_ignores = false
 no_implicit_optional = true
 ignore_missing_imports = true
+exclude = ["build/", "dist/"]
 
 [[tool.mypy.overrides]]
 module = "pg8000.*"

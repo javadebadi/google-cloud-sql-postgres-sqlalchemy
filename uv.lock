@@ -817,7 +817,7 @@ wheels = [
 
 [[package]]
 name = "google-cloud-sql-postgres-sqlalchemy"
-version = "0.2.4"
+version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "cloud-sql-python-connector", extra = ["pg8000"] },

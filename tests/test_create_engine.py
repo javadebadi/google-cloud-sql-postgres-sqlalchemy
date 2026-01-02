@@ -313,11 +313,11 @@ def get_postgres_config() -> dict[str, str | int] | None:
 
     if all([host, port, user, password, database]):
         return {
-            "host": host,
+            "host": str(host),
             "port": int(port),  # type: ignore[arg-type]
-            "username": user,
-            "password": password,
-            "database": database,
+            "username": str(user),
+            "password": str(password),
+            "database": str(database),
         }
     return None
 
