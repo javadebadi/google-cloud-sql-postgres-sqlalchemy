@@ -1,9 +1,10 @@
 """Tests for the create_engine module."""
 
+import os
 from unittest.mock import Mock, patch
 
 import pytest
-from sqlalchemy import Engine
+from sqlalchemy import Engine, text
 
 from google_cloud_sql_postgres_sqlalchemy.create_engine import (
     create_database_engine,
@@ -291,3 +292,167 @@ def test_create_postgres_engine_in_cloud_sql_connection_failure(
         engine.connect()
 
     assert "Failed to create Cloud SQL connection" in str(exc_info.value)
+
+
+# ============================================================================
+# Integration Tests - Use Real PostgreSQL Database
+# ============================================================================
+
+
+def get_postgres_config() -> dict[str, str | int] | None:
+    """Get PostgreSQL configuration from environment variables.
+
+    Returns:
+        Dict with connection parameters if all env vars are set, None otherwise.
+    """
+    host = os.getenv("POSTGRES_HOST")
+    port = os.getenv("POSTGRES_PORT")
+    user = os.getenv("POSTGRES_USER")
+    password = os.getenv("POSTGRES_PASSWORD")
+    database = os.getenv("POSTGRES_DB")
+
+    if all([host, port, user, password, database]):
+        return {
+            "host": host,
+            "port": int(port),  # type: ignore[arg-type]
+            "username": user,
+            "password": password,
+            "database": database,
+        }
+    return None
+
+
+@pytest.mark.skipif(
+    get_postgres_config() is None,
+    reason="PostgreSQL environment variables not set",
+)
+def test_create_postgres_engine_integration() -> None:
+    """Integration test: Create engine and connect to real PostgreSQL."""
+    # Given PostgreSQL is available via environment variables
+    config = get_postgres_config()
+    assert config is not None
+
+    # When I create a PostgreSQL engine
+    engine = create_postgres_engine(
+        username=config["username"],  # type: ignore[arg-type]
+        password=config["password"],  # type: ignore[arg-type]
+        host=config["host"],  # type: ignore[arg-type]
+        database=config["database"],  # type: ignore[arg-type]
+    )
+
+    # Then the engine should be created successfully
+    assert isinstance(engine, Engine)
+
+    # And I should be able to connect and execute a query
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT 1 as num"))
+        row = result.fetchone()
+        assert row is not None
+        assert row[0] == 1
+
+
+@pytest.mark.skipif(
+    get_postgres_config() is None,
+    reason="PostgreSQL environment variables not set",
+)
+def test_create_sqlalchemy_url_integration() -> None:
+    """Integration test: URL string works with real PostgreSQL."""
+    # Given PostgreSQL is available via environment variables
+    config = get_postgres_config()
+    assert config is not None
+
+    # When I create a SQLAlchemy URL string
+    url = create_sqlalchemy_url(
+        username=config["username"],  # type: ignore[arg-type]
+        password=config["password"],  # type: ignore[arg-type]
+        host=config["host"],  # type: ignore[arg-type]
+        database=config["database"],  # type: ignore[arg-type]
+        port=config["port"],  # type: ignore[arg-type]
+    )
+
+    # Then the URL should contain all connection parameters
+    assert str(config["username"]) in url
+    assert str(config["host"]) in url
+    assert str(config["database"]) in url
+
+    # And I should be able to create an engine and connect with it
+    from sqlalchemy import create_engine as sa_create_engine
+
+    engine = sa_create_engine(url)
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT version()"))
+        row = result.fetchone()
+        assert row is not None
+        assert "PostgreSQL" in row[0]
+
+
+@pytest.mark.skipif(
+    get_postgres_config() is None,
+    reason="PostgreSQL environment variables not set",
+)
+def test_connection_pool_integration() -> None:
+    """Integration test: Connection pool works with real PostgreSQL."""
+    # Given PostgreSQL is available and custom pool settings
+    config = get_postgres_config()
+    assert config is not None
+
+    pool_size = 5
+    max_overflow = 3
+
+    # When I create an engine with custom pool settings
+    engine = create_postgres_engine(
+        username=config["username"],  # type: ignore[arg-type]
+        password=config["password"],  # type: ignore[arg-type]
+        host=config["host"],  # type: ignore[arg-type]
+        database=config["database"],  # type: ignore[arg-type]
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+    )
+
+    # Then the pool should have the correct settings
+    assert engine.pool.size() == pool_size  # type: ignore[attr-defined]
+    assert engine.pool._max_overflow == max_overflow  # type: ignore[attr-defined]
+
+    # And I should be able to use multiple connections from the pool
+    connections = []
+    try:
+        # Get multiple connections from the pool
+        for _ in range(pool_size):
+            conn = engine.connect()
+            connections.append(conn)
+            # Verify each connection works
+            result = conn.execute(text("SELECT 1"))
+            assert result.fetchone()[0] == 1  # type: ignore[index]
+    finally:
+        # Clean up connections
+        for conn in connections:
+            conn.close()
+
+
+@pytest.mark.skipif(
+    get_postgres_config() is None,
+    reason="PostgreSQL environment variables not set",
+)
+def test_create_database_engine_integration_without_cloud_sql() -> None:
+    """Integration test: create_database_engine works without Cloud SQL."""
+    # Given PostgreSQL is available and no google_cloud_project_id
+    config = get_postgres_config()
+    assert config is not None
+
+    # When I create a database engine without Cloud SQL
+    engine = create_database_engine(
+        username=config["username"],  # type: ignore[arg-type]
+        password=config["password"],  # type: ignore[arg-type]
+        host=config["host"],  # type: ignore[arg-type]
+        database=config["database"],  # type: ignore[arg-type]
+        google_cloud_project_id=None,
+    )
+
+    # Then the engine should work with real PostgreSQL
+    assert isinstance(engine, Engine)
+
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT current_database()"))
+        row = result.fetchone()
+        assert row is not None
+        assert row[0] == config["database"]
