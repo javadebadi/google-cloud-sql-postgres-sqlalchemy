@@ -5,6 +5,8 @@ from google.cloud.sql.connector import Connector
 from pg8000.dbapi import Connection as PG8000Connection
 from sqlalchemy import URL, Engine, create_engine
 
+from .cloud_sql_proxy import is_valid_cloud_sql_instance_name
+
 
 def create_postgres_engine(
     username: str,
@@ -50,12 +52,23 @@ def create_postgres_engine_in_cloud_sql(
     Args:
         username: Database username
         password: Database password
-        host: Cloud SQL instance connection name
+        host: Cloud SQL instance connection name (format: project:region:instance)
         database: Database name
 
     Returns:
         SQLAlchemy Engine instance configured for Cloud SQL
+
+    Raises:
+        ValueError: If the instance connection name format is invalid
     """
+    # Validate instance connection name format
+    if not is_valid_cloud_sql_instance_name(host):
+        raise ValueError(
+            f"Invalid Cloud SQL instance connection name: '{host}'. "
+            "Expected format: 'project-id:region:instance-name' "
+            "(e.g., 'my-project:us-central1:my-instance')",
+        )
+
     # Initialize Cloud SQL connector
     connector = Connector()
 

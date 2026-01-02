@@ -4,7 +4,11 @@ This package provides utilities for creating SQLAlchemy engines that work with
 PostgreSQL databases, both locally and on Google Cloud SQL.
 """
 
-from .cloud_sql_proxy import cloud_sql_proxy_running, get_cloud_sql_proxy_path
+from .cloud_sql_proxy import (
+    cloud_sql_proxy_running,
+    get_cloud_sql_proxy_path,
+    is_valid_cloud_sql_instance_name,
+)
 from .create_engine import (
     create_database_engine,
     create_postgres_engine,
@@ -19,4 +23,5 @@ __all__ = [
     "create_postgres_engine",
     "create_postgres_engine_in_cloud_sql",
     "get_cloud_sql_proxy_path",
+    "is_valid_cloud_sql_instance_name",
 ]

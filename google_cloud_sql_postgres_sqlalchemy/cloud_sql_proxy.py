@@ -2,11 +2,38 @@
 
 import os
 import platform
+import re
 import shutil
 import subprocess
 import time
 from collections.abc import Generator
 from contextlib import contextmanager
+
+
+def is_valid_cloud_sql_instance_name(instance_connection_name: str) -> bool:
+    """
+    Validate Cloud SQL instance connection name format.
+
+    The format should be: project-id:region:instance-name
+
+    Args:
+        instance_connection_name: The instance connection name to validate
+
+    Returns:
+        True if valid, False otherwise
+
+    Examples:
+        >>> is_valid_cloud_sql_instance_name("my-project:us-central1:my-instance")
+        True
+        >>> is_valid_cloud_sql_instance_name("invalid-format")
+        False
+    """
+    # Pattern: project-id:region:instance-name
+    # Project IDs: 6-30 chars, start with letter, letters/numbers/hyphens
+    # Region: GCP region format (e.g., us-central1, northamerica-northeast1)
+    # Instance name: letters, numbers, hyphens
+    pattern = r"^[a-z][a-z0-9-]{5,29}:[a-z]+(-[a-z]+)*\d+:[a-z0-9-]+$"
+    return bool(re.match(pattern, instance_connection_name))
 
 
 def get_cloud_sql_proxy_path() -> str:

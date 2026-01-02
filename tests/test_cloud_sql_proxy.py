@@ -7,7 +7,77 @@ import pytest
 from google_cloud_sql_postgres_sqlalchemy import (
     cloud_sql_proxy_running,
     get_cloud_sql_proxy_path,
+    is_valid_cloud_sql_instance_name,
 )
+
+
+class TestIsValidCloudSqlInstanceName:
+    """Tests for is_valid_cloud_sql_instance_name function."""
+
+    def test_valid_instance_names(self) -> None:
+        """Test valid Cloud SQL instance connection names."""
+        # Given valid instance connection names
+        valid_names = [
+            "my-project:us-central1:my-instance",
+            "test-project:europe-west1:db-instance",
+            "prod123:asia-east1:database-1",
+            "project-a:us-west2:instance-b",
+            "myapp01:northamerica-northeast1:postgres-db",
+        ]
+
+        # When I validate each name
+        # Then all should be valid
+        for name in valid_names:
+            assert is_valid_cloud_sql_instance_name(name), (
+                f"Expected {name} to be valid"
+            )
+
+    def test_invalid_instance_names(self) -> None:
+        """Test invalid Cloud SQL instance connection names."""
+        # Given invalid instance connection names
+        invalid_names = [
+            "invalid",  # Missing colons
+            "project:region",  # Missing instance name
+            "project:us-central1",  # Missing instance name
+            ":us-central1:instance",  # Missing project
+            "project::instance",  # Missing region
+            "Project:us-central1:instance",  # Uppercase in project
+            "project:US-CENTRAL1:instance",  # Uppercase in region
+            "project:us-central1:Instance",  # Uppercase in instance
+            "123project:us-central1:instance",  # Project starts with number
+            "pr:us-central1:instance",  # Project too short (< 6 chars)
+            "a" * 31 + ":us-central1:instance",  # Project too long (> 30 chars)
+            "project:invalid-region:instance",  # Invalid region format
+            "project:us-central:instance",  # Missing number in region
+            "project:us-1:instance",  # Invalid region format
+        ]
+
+        # When I validate each name
+        # Then all should be invalid
+        for name in invalid_names:
+            assert not is_valid_cloud_sql_instance_name(
+                name,
+            ), f"Expected {name} to be invalid"
+
+    def test_edge_cases(self) -> None:
+        """Test edge cases for instance name validation."""
+        # Given edge case instance names
+        # Minimum valid project name (6 chars)
+        assert is_valid_cloud_sql_instance_name("abcdef:us-central1:instance")
+
+        # Maximum valid project name (30 chars)
+        assert is_valid_cloud_sql_instance_name(
+            "a" + "b" * 28 + "c:us-central1:instance",
+        )
+
+        # Instance name with hyphens
+        assert is_valid_cloud_sql_instance_name("project:us-central1:my-db-001")
+
+        # Empty string
+        assert not is_valid_cloud_sql_instance_name("")
+
+        # Only colons
+        assert not is_valid_cloud_sql_instance_name("::")
 
 
 class TestGetCloudSqlProxyPath:

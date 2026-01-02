@@ -167,6 +167,29 @@ def test_create_postgres_engine_in_cloud_sql_successful_connection(
     )
 
 
+def test_create_postgres_engine_in_cloud_sql_invalid_instance_name() -> None:
+    """Test that ValueError is raised for invalid instance connection name."""
+    # Given database connection parameters with invalid instance name
+    username = "test_user"
+    password = "test_password"
+    invalid_host = "invalid-format"  # Missing region and instance
+    database = "test_db"
+
+    # When I try to create a Cloud SQL Postgres engine with invalid name
+    # Then it should raise ValueError
+    with pytest.raises(ValueError) as exc_info:
+        create_postgres_engine_in_cloud_sql(
+            username=username,
+            password=password,
+            host=invalid_host,
+            database=database,
+        )
+
+    # And the error message should be helpful
+    assert "Invalid Cloud SQL instance connection name" in str(exc_info.value)
+    assert "project-id:region:instance-name" in str(exc_info.value)
+
+
 @patch("google_cloud_sql_postgres_sqlalchemy.create_engine.Connector")
 def test_create_postgres_engine_in_cloud_sql_connection_failure(
     mock_connector_class: Mock,
