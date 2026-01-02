@@ -13,6 +13,10 @@ def create_postgres_engine(
     password: str,
     host: str,
     database: str,
+    pool_size: int = 20,
+    max_overflow: int = 10,
+    pool_timeout: int = 30,
+    pool_recycle: int = 3600,
 ) -> Engine:
     """Create a Postgres SQLAlchemy engine instance.
 
@@ -24,6 +28,10 @@ def create_postgres_engine(
         password: Database password
         host: Database host
         database: Database name
+        pool_size: Number of connections to maintain in the pool (default: 20)
+        max_overflow: Max number of connections beyond pool_size (default: 10)
+        pool_timeout: Seconds to wait for connection from pool (default: 30)
+        pool_recycle: Seconds after which to recycle connections (default: 3600)
 
     Returns:
         SQLAlchemy Engine instance
@@ -35,7 +43,13 @@ def create_postgres_engine(
         host=host,
         database=database,
     )
-    return create_engine(url_object)
+    return create_engine(
+        url_object,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_timeout=pool_timeout,
+        pool_recycle=pool_recycle,
+    )
 
 
 def create_postgres_engine_in_cloud_sql(
@@ -43,6 +57,10 @@ def create_postgres_engine_in_cloud_sql(
     password: str,
     host: str,
     database: str,
+    pool_size: int = 20,
+    max_overflow: int = 10,
+    pool_timeout: int = 30,
+    pool_recycle: int = 3600,
 ) -> Engine:
     """Create a Postgres SQLAlchemy engine instance for Cloud SQL.
 
@@ -54,6 +72,10 @@ def create_postgres_engine_in_cloud_sql(
         password: Database password
         host: Cloud SQL instance connection name (format: project:region:instance)
         database: Database name
+        pool_size: Number of connections to maintain in the pool (default: 20)
+        max_overflow: Max number of connections beyond pool_size (default: 10)
+        pool_timeout: Seconds to wait for connection from pool (default: 30)
+        pool_recycle: Seconds after which to recycle connections (default: 3600)
 
     Returns:
         SQLAlchemy Engine instance configured for Cloud SQL
@@ -92,6 +114,10 @@ def create_postgres_engine_in_cloud_sql(
     engine = sqlalchemy.create_engine(
         "postgresql+pg8000://",
         creator=get_cloud_sql_connector,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_timeout=pool_timeout,
+        pool_recycle=pool_recycle,
     )
     return engine
 
@@ -102,6 +128,10 @@ def create_database_engine(
     host: str,
     database: str,
     google_cloud_project_id: str | None = None,
+    pool_size: int = 20,
+    max_overflow: int = 10,
+    pool_timeout: int = 30,
+    pool_recycle: int = 3600,
 ) -> Engine:
     """Create a SQLAlchemy engine for Postgres.
 
@@ -116,6 +146,10 @@ def create_database_engine(
         google_cloud_project_id: Optional Google Cloud project ID. If provided,
             creates a Cloud SQL connector-based engine. Otherwise creates a
             standard Postgres engine.
+        pool_size: Number of connections to maintain in the pool (default: 20)
+        max_overflow: Max number of connections beyond pool_size (default: 10)
+        pool_timeout: Seconds to wait for connection from pool (default: 30)
+        pool_recycle: Seconds after which to recycle connections (default: 3600)
 
     Returns:
         SQLAlchemy Engine instance
@@ -127,6 +161,10 @@ def create_database_engine(
             password=password,
             host=host,
             database=database,
+            pool_size=pool_size,
+            max_overflow=max_overflow,
+            pool_timeout=pool_timeout,
+            pool_recycle=pool_recycle,
         )
     else:
         return create_postgres_engine(
@@ -134,4 +172,8 @@ def create_database_engine(
             password=password,
             host=host,
             database=database,
+            pool_size=pool_size,
+            max_overflow=max_overflow,
+            pool_timeout=pool_timeout,
+            pool_recycle=pool_recycle,
         )

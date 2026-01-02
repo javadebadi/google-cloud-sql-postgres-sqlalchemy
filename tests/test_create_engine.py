@@ -36,6 +36,38 @@ def test_create_postgres_engine() -> None:
     assert database in str(engine.url)
 
 
+def test_create_postgres_engine_with_custom_pool_settings() -> None:
+    """Test creating a Postgres engine with custom pool configuration."""
+    # Given database connection parameters and custom pool settings
+    username = "test_user"
+    password = "test_password"
+    host = "localhost"
+    database = "test_db"
+    pool_size = 50
+    max_overflow = 20
+    pool_timeout = 60
+    pool_recycle = 7200
+
+    # When I create a Postgres engine with custom pool settings
+    engine = create_postgres_engine(
+        username=username,
+        password=password,
+        host=host,
+        database=database,
+        pool_size=pool_size,
+        max_overflow=max_overflow,
+        pool_timeout=pool_timeout,
+        pool_recycle=pool_recycle,
+    )
+
+    # Then the engine should have the custom pool settings
+    assert isinstance(engine, Engine)
+    assert engine.pool.size() == pool_size  # type: ignore
+    assert engine.pool._max_overflow == max_overflow  # type: ignore
+    assert engine.pool._timeout == pool_timeout  # type: ignore
+    assert engine.pool._recycle == pool_recycle
+
+
 @patch("google_cloud_sql_postgres_sqlalchemy.create_engine.Connector")
 def test_create_postgres_engine_in_cloud_sql(mock_connector_class: Mock) -> None:
     """Test creating a Cloud SQL Postgres engine."""
