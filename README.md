@@ -191,6 +191,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
+### 0.2.5 (2026-01-02)
+- Add unit tests for `create_sqlalchemy_url()` function to maintain 100% test coverage
+
 ### 0.2.4 (2026-01-02)
 - Add `create_sqlalchemy_url()` utility for generating connection URL strings
 

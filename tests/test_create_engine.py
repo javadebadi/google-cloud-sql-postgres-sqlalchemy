@@ -5,11 +5,41 @@ from unittest.mock import Mock, patch
 import pytest
 from sqlalchemy import Engine
 
-from google_cloud_sql_postgres_sqlalchemy import (
+from google_cloud_sql_postgres_sqlalchemy.create_engine import (
     create_database_engine,
     create_postgres_engine,
     create_postgres_engine_in_cloud_sql,
+    create_sqlalchemy_url,
 )
+
+
+def test_create_sqlalchemy_url_without_port() -> None:
+    """Test creating SQLAlchemy URL without port."""
+    # Given database connection parameters without port
+    url = create_sqlalchemy_url(
+        username="testuser",
+        password="testpass",
+        host="localhost",
+        database="testdb",
+    )
+
+    # Then URL should be formatted correctly without port
+    assert url == "postgresql+pg8000://testuser:testpass@localhost/testdb"
+
+
+def test_create_sqlalchemy_url_with_port() -> None:
+    """Test creating SQLAlchemy URL with port."""
+    # Given database connection parameters with port
+    url = create_sqlalchemy_url(
+        username="testuser",
+        password="testpass",
+        host="localhost",
+        database="testdb",
+        port=5432,
+    )
+
+    # Then URL should be formatted correctly with port
+    assert url == "postgresql+pg8000://testuser:testpass@localhost:5432/testdb"
 
 
 def test_create_postgres_engine() -> None:

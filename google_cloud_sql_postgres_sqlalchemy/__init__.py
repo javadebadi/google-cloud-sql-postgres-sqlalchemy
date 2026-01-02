@@ -16,7 +16,7 @@ from .create_engine import (
     create_sqlalchemy_url,
 )
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 __all__ = [
     "cloud_sql_proxy_running",
