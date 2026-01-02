@@ -121,6 +121,53 @@ def test_create_database_engine_with_cloud_sql(mock_connector_class: Mock) -> No
 
 
 @patch("google_cloud_sql_postgres_sqlalchemy.create_engine.Connector")
+def test_create_postgres_engine_in_cloud_sql_successful_connection(
+    mock_connector_class: Mock,
+) -> None:
+    """Test successful Cloud SQL connection creation through creator function."""
+    # Given database connection parameters
+    username = "test_user"
+    password = "test_password"
+    host = "test-project:us-central1:test-instance"
+    database = "test_db"
+
+    # And a mock connector that returns a valid connection
+    mock_connector = Mock()
+    mock_connection = Mock()
+    mock_connection.py_types = {str: str}  # Mock the pg8000 attribute
+    mock_connector.connect.return_value = mock_connection
+    mock_connector_class.return_value = mock_connector
+
+    # When I create a Cloud SQL Postgres engine
+    engine = create_postgres_engine_in_cloud_sql(
+        username=username,
+        password=password,
+        host=host,
+        database=database,
+    )
+
+    # And get the creator function from the engine
+    # The creator function is stored during engine creation
+    # We can call it directly to test the success path
+    pool = engine.pool
+    creator = pool._creator
+
+    # When I call the creator function
+    conn = creator()  # type: ignore[call-arg]
+
+    # Then it should return the mocked connection
+    assert conn == mock_connection
+    # And the connector should have been called with correct parameters
+    mock_connector.connect.assert_called_with(
+        host,
+        "pg8000",
+        user=username,
+        password=password,
+        db=database,
+    )
+
+
+@patch("google_cloud_sql_postgres_sqlalchemy.create_engine.Connector")
 def test_create_postgres_engine_in_cloud_sql_connection_failure(
     mock_connector_class: Mock,
 ) -> None:

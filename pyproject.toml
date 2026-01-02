@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Javad", email = "javad@example.com"}
+    {name = "Javad", email = "javad@javadebadi.com"}
 ]
 keywords = ["sqlalchemy", "postgresql", "google-cloud-sql", "pg8000", "database"]
 classifiers = [
