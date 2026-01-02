@@ -33,6 +33,33 @@ engine = create_postgres_engine(
 )
 ```
 
+### Creating SQLAlchemy URL Strings
+
+If you need to generate a SQLAlchemy connection URL string (e.g., for configuration files or frameworks):
+
+```python
+from google_cloud_sql_postgres_sqlalchemy import create_sqlalchemy_url
+
+# Without port
+url = create_sqlalchemy_url(
+    username="myuser",
+    password="mypassword",
+    host="localhost",
+    database="mydatabase",
+)
+# Returns: 'postgresql+pg8000://myuser:mypassword@localhost/mydatabase'
+
+# With port
+url = create_sqlalchemy_url(
+    username="myuser",
+    password="mypassword",
+    host="localhost",
+    database="mydatabase",
+    port=5432,
+)
+# Returns: 'postgresql+pg8000://myuser:mypassword@localhost:5432/mydatabase'
+```
+
 ### Connection Pool Configuration
 
 All engine creation functions support connection pool configuration:
@@ -165,8 +192,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Changelog
 
 ### 0.2.3 (2026-01-02)
+- Add `create_sqlalchemy_url()` utility for generating connection URL strings
 - Add coverage badge
 - Add engine pool size configuration
+- Add validation for Cloud SQL instance connection names
+- Improve logging with structured logger
 
 ### 0.2.2 (2026-01-02)
 - Add comprehensive unit tests achieving 100% test coverage

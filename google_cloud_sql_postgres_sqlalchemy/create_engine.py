@@ -8,6 +8,37 @@ from sqlalchemy import URL, Engine, create_engine
 from .cloud_sql_proxy import is_valid_cloud_sql_instance_name
 
 
+def create_sqlalchemy_url(
+    username: str,
+    password: str,
+    host: str,
+    database: str,
+    port: int | None = None,
+) -> str:
+    """Create a SQLAlchemy database URL string for PostgreSQL with pg8000.
+
+    Args:
+        username: Database username
+        password: Database password
+        host: Database host
+        database: Database name
+        port: Database port (optional)
+
+    Returns:
+        SQLAlchemy URL string in format: postgresql+pg8000://user:pass@host[:port]/db
+
+    Examples:
+        >>> create_sqlalchemy_url("user", "pass", "localhost", "mydb")
+        'postgresql+pg8000://user:pass@localhost/mydb'
+        >>> create_sqlalchemy_url("user", "pass", "localhost", "mydb", 5432)
+        'postgresql+pg8000://user:pass@localhost:5432/mydb'
+    """
+    if port:
+        return f"postgresql+pg8000://{username}:{password}@{host}:{port}/{database}"
+    else:
+        return f"postgresql+pg8000://{username}:{password}@{host}/{database}"
+
+
 def create_postgres_engine(
     username: str,
     password: str,

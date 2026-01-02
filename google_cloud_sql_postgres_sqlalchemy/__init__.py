@@ -13,6 +13,7 @@ from .create_engine import (
     create_database_engine,
     create_postgres_engine,
     create_postgres_engine_in_cloud_sql,
+    create_sqlalchemy_url,
 )
 
 __version__ = "0.2.3"
@@ -22,6 +23,7 @@ __all__ = [
     "create_database_engine",
     "create_postgres_engine",
     "create_postgres_engine_in_cloud_sql",
+    "create_sqlalchemy_url",
     "get_cloud_sql_proxy_path",
     "is_valid_cloud_sql_instance_name",
 ]
