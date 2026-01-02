@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/javadebadi/google-cloud-sql-postgres-sqlalchemy/branch/main/graph/badge.svg)](https://codecov.io/gh/javadebadi/google-cloud-sql-postgres-sqlalchemy)
+
 # Google Cloud SQL PostgreSQL SQLAlchemy
 
 A Python library that provides utilities for creating SQLAlchemy engines that work with PostgreSQL databases, both locally and on Google Cloud SQL.
@@ -30,6 +32,29 @@ engine = create_postgres_engine(
     database="mydatabase",
 )
 ```
+
+### Connection Pool Configuration
+
+All engine creation functions support connection pool configuration:
+
+```python
+engine = create_postgres_engine(
+    username="myuser",
+    password="mypassword",
+    host="localhost",
+    database="mydatabase",
+    pool_size=20,          # Number of connections to maintain (default: 20)
+    max_overflow=10,       # Additional connections beyond pool_size (default: 10)
+    pool_timeout=30,       # Seconds to wait for connection (default: 30)
+    pool_recycle=3600,     # Recycle connections after N seconds (default: 3600)
+)
+```
+
+**Pool Parameters**:
+- `pool_size`: Number of connections to keep open. Default is 20 for production use.
+- `max_overflow`: Maximum number of connections that can be created beyond `pool_size`. Total connections = pool_size + max_overflow.
+- `pool_timeout`: Seconds to wait before giving up on getting a connection from the pool.
+- `pool_recycle`: Number of seconds after which a connection is automatically recycled. Helps prevent stale connections.
 
 ### Google Cloud SQL Connection
 
