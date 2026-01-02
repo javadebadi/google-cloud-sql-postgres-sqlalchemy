@@ -387,15 +387,15 @@ class TestCloudSqlProxyRunning:
     @patch(
         "google_cloud_sql_postgres_sqlalchemy.cloud_sql_proxy.get_cloud_sql_proxy_path",
     )
-    @patch("builtins.print")
-    def test_prints_startup_messages(
+    @patch("google_cloud_sql_postgres_sqlalchemy.cloud_sql_proxy.logger")
+    def test_logs_startup_messages(
         self,
-        mock_print: Mock,
+        mock_logger: Mock,
         mock_get_path: Mock,
         mock_sleep: Mock,
         mock_popen: Mock,
     ) -> None:
-        """Test that startup messages are printed."""
+        """Test that startup messages are logged."""
         # Given a proxy path
         proxy_path = "/usr/bin/cloud-sql-proxy"
         mock_get_path.return_value = proxy_path
@@ -409,10 +409,12 @@ class TestCloudSqlProxyRunning:
         ):
             pass
 
-        # Then startup messages should be printed
-        assert mock_print.call_count == 3
-        mock_print.assert_any_call("Starting Cloud SQL Proxy...")
-        mock_print.assert_any_call(f"Using cloud-sql-proxy at: {proxy_path}")
-        mock_print.assert_any_call(
-            "Connecting to instance: my-project:us-central1:my-instance on port 5432",
+        # Then startup messages should be logged
+        assert mock_logger.info.call_count == 3
+        mock_logger.info.assert_any_call("Starting Cloud SQL Proxy...")
+        mock_logger.info.assert_any_call("Using cloud-sql-proxy at: %s", proxy_path)
+        mock_logger.info.assert_any_call(
+            "Connecting to instance: %s on port %s",
+            "my-project:us-central1:my-instance",
+            5432,
         )

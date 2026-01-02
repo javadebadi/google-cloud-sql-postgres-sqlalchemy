@@ -59,6 +59,20 @@ engine = create_database_engine(
 )
 ```
 
+### Configuring Logging
+
+The library uses Python's standard `logging` module. To see Cloud SQL Proxy startup messages:
+
+```python
+import logging
+
+# Configure logging to see INFO messages from the library
+logging.basicConfig(level=logging.INFO)
+
+# Or configure only for this library
+logging.getLogger('google_cloud_sql_postgres_sqlalchemy').setLevel(logging.INFO)
+```
+
 ### Using Cloud SQL Proxy (Alternative Method)
 
 For development or testing, you can use the Cloud SQL Proxy utilities to connect to Cloud SQL through a local proxy:

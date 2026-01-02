@@ -1,5 +1,6 @@
 """Utilities for working with Cloud SQL Proxy."""
 
+import logging
 import os
 import platform
 import re
@@ -8,6 +9,8 @@ import subprocess
 import time
 from collections.abc import Generator
 from contextlib import contextmanager
+
+logger = logging.getLogger(__name__)
 
 
 def is_valid_cloud_sql_instance_name(instance_connection_name: str) -> bool:
@@ -100,9 +103,9 @@ def cloud_sql_proxy_running(
     if cloud_sql_proxy_path is None:
         cloud_sql_proxy_path = get_cloud_sql_proxy_path()
 
-    print("Starting Cloud SQL Proxy...")
-    print(f"Using cloud-sql-proxy at: {cloud_sql_proxy_path}")
-    print(f"Connecting to instance: {instance_connection_name} on port {port}")
+    logger.info("Starting Cloud SQL Proxy...")
+    logger.info("Using cloud-sql-proxy at: %s", cloud_sql_proxy_path)
+    logger.info("Connecting to instance: %s on port %s", instance_connection_name, port)
 
     process = subprocess.Popen(
         [
