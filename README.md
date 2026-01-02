@@ -191,7 +191,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
-### 0.1.0 (2026-01-02)
+### 1.0.0 (2026-01-02)
 - Support for local PostgreSQL connections
 - Support for Google Cloud SQL connections using Cloud SQL Python Connector
 - Automatic connection routing based on configuration
