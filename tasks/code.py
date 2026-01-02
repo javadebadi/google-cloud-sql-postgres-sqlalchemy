@@ -82,6 +82,20 @@ def coverage(c: Context, path: str = "google_cloud_sql_postgres_sqlalchemy") -> 
 
 
 @task(help={})
+def coverage_xml(
+    c: Context,
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
+) -> None:
+    """
+    Run pytest coverage on test suite and generate XML report.
+
+    Args:
+        path: Coverage path (default: google_cloud_sql_postgres_sqlalchemy)
+    """
+    c.run(f"pytest --cov={path} --cov-report=xml", pty=True)
+
+
+@task(help={})
 def coverage_open(
     c: Context,
     path: str = "google_cloud_sql_postgres_sqlalchemy",
