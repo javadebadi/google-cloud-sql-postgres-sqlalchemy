@@ -35,17 +35,22 @@ You need to create API tokens for both Test PyPI and PyPI, then add them as GitH
 The package automatically publishes to PyPI when you push a version tag:
 
 ```bash
-# 1. Update version in pyproject.toml if needed (optional - workflow updates it)
-# 2. Commit any pending changes
-git add .
-git commit -m "Prepare release v0.2.0"
+# 1. Update version in pyproject.toml
+# IMPORTANT: The version MUST match the tag you'll create
+# Example: version = "0.2.0"
+sed -i 's/version = ".*"/version = "0.2.0"/' pyproject.toml
+
+# 2. Commit the version change
+git add pyproject.toml
+git commit -m "Bump version to 0.2.0"
 git push
 
-# 3. Create and push a version tag
+# 3. Create and push a version tag (must match pyproject.toml version)
 git tag v0.2.0
 git push origin v0.2.0
 
 # 4. GitHub Actions will automatically:
+#    - Validate that tag version matches pyproject.toml version
 #    - Run all tests
 #    - Build the package
 #    - Publish to Test PyPI (if token configured)
@@ -53,16 +58,19 @@ git push origin v0.2.0
 #    - Create a GitHub Release
 ```
 
+**⚠️ Important**: The git tag version (without the 'v' prefix) must exactly match the version in `pyproject.toml`, or the workflow will fail with a validation error.
+
 ### What Happens Automatically
 
 When you push a tag like `v0.2.0`:
-1. ✅ CI tests run on all Python versions (3.10-3.14)
-2. ✅ Version is extracted from tag (e.g., `v0.2.0` → `0.2.0`)
-3. ✅ `pyproject.toml` version is updated
-4. ✅ Package is built
-5. ✅ Published to Test PyPI (optional, skips if exists)
-6. ✅ Published to PyPI
-7. ✅ GitHub Release is created with release notes
+1. ✅ Version is extracted from tag (e.g., `v0.2.0` → `0.2.0`)
+2. ✅ Version is extracted from `pyproject.toml`
+3. ✅ **Validation**: Ensures tag version matches package version (fails if mismatch)
+4. ✅ CI tests run on all Python versions (3.10-3.14)
+5. ✅ Package is built
+6. ✅ Published to Test PyPI (optional, skips if exists)
+7. ✅ Published to PyPI
+8. ✅ GitHub Release is created with release notes
 
 ### Manual Release
 

@@ -39,13 +39,35 @@ jobs:
           # Remove 'v' prefix from tag to get version number
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "Publishing version: $VERSION"
+          echo "Tag version: $VERSION"
 
-      - name: Update version in pyproject.toml
+      - name: Extract version from pyproject.toml
+        id: get_package_version
         run: |
-          # Update version in pyproject.toml to match the tag
-          sed -i 's/version = ".*"/version = "${{ steps.get_version.outputs.VERSION }}"/' pyproject.toml
-          cat pyproject.toml | grep version
+          # Extract version from pyproject.toml
+          PACKAGE_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: $PACKAGE_VERSION"
+
+      - name: Validate version match
+        run: |
+          TAG_VERSION="${{ steps.get_version.outputs.VERSION }}"
+          PACKAGE_VERSION="${{ steps.get_package_version.outputs.PACKAGE_VERSION }}"
+
+          echo "Validating versions..."
+          echo "  Tag version:     v$TAG_VERSION"
+          echo "  Package version: $PACKAGE_VERSION"
+
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "❌ ERROR: Version mismatch!"
+            echo "   Git tag version (v$TAG_VERSION) does not match pyproject.toml version ($PACKAGE_VERSION)"
+            echo ""
+            echo "Please update the version in pyproject.toml to match the tag:"
+            echo "  version = \"$TAG_VERSION\""
+            exit 1
+          fi
+
+          echo "✅ Versions match! Proceeding with publication..."
 
       - name: Run tests
         run: |
