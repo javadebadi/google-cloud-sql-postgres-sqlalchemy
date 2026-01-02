@@ -15,7 +15,7 @@ from .create_engine import (
     create_postgres_engine_in_cloud_sql,
 )
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 __all__ = [
     "cloud_sql_proxy_running",

@@ -164,6 +164,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
+### 0.2.3 (2026-01-02)
+- Add coverage badge
+- Add engine pool size configuration
+
 ### 0.2.2 (2026-01-02)
 - Add comprehensive unit tests achieving 100% test coverage
 - Add 13 tests for cloud_sql_proxy module covering all platforms
