@@ -34,8 +34,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/knaph/google-cloud-sql-postgres-sqlalchemy"
-Repository = "https://github.com/knaph/google-cloud-sql-postgres-sqlalchemy"
+Homepage = "https://github.com/javadebadi/google-cloud-sql-postgres-sqlalchemy"
+Repository = "https://github.com/javadebadi/google-cloud-sql-postgres-sqlalchemy"
 
 [tool.setuptools.packages.find]
 where = ["."]
