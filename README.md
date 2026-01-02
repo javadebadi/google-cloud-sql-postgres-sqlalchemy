@@ -191,35 +191,16 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
-### 0.2.5 (2026-01-02)
-- Add unit tests for `create_sqlalchemy_url()` function to maintain 100% test coverage
-
-### 0.2.4 (2026-01-02)
-- Add `create_sqlalchemy_url()` utility for generating connection URL strings
-
-### 0.2.3 (2026-01-02)
-- Add coverage badge
-- Add engine pool size configuration
-- Add validation for Cloud SQL instance connection names
-- Improve logging with structured logger
-
-### 0.2.2 (2026-01-02)
-- Add comprehensive unit tests achieving 100% test coverage
-- Add 13 tests for cloud_sql_proxy module covering all platforms
-- Add test for successful Cloud SQL connection creation
-- Update author email
-
-### 0.2.1 (2026-01-02)
-- Fix GitHub Actions publish workflow permissions
-- Add comprehensive documentation for Cloud SQL Proxy utilities
-
-### 0.2.0 (2026-01-02)
-- Add cross-platform Cloud SQL Proxy utilities
-- Add `cloud_sql_proxy_running()` context manager
-- Add `get_cloud_sql_proxy_path()` for automatic proxy detection across macOS, Linux, and Windows
-
-### 0.1.0 (2026-01-01)
-- Initial release
+### 0.1.0 (2026-01-02)
 - Support for local PostgreSQL connections
-- Support for Google Cloud SQL connections
+- Support for Google Cloud SQL connections using Cloud SQL Python Connector
 - Automatic connection routing based on configuration
+- Cross-platform Cloud SQL Proxy utilities
+- `cloud_sql_proxy_running()` context manager for managing proxy lifecycle
+- `get_cloud_sql_proxy_path()` for automatic proxy detection across macOS, Linux, and Windows
+- `create_sqlalchemy_url()` utility for generating connection URL strings
+- Validation for Cloud SQL instance connection names
+- Connection pool configuration (pool_size, max_overflow, pool_timeout, pool_recycle)
+- Structured logging with Python's logging module
+- Comprehensive unit tests achieving 100% code coverage
+- Full type hints support
