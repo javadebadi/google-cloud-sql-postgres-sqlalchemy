@@ -191,8 +191,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
-### 0.2.3 (2026-01-02)
+### 0.2.4 (2026-01-02)
 - Add `create_sqlalchemy_url()` utility for generating connection URL strings
+
+### 0.2.3 (2026-01-02)
 - Add coverage badge
 - Add engine pool size configuration
 - Add validation for Cloud SQL instance connection names
