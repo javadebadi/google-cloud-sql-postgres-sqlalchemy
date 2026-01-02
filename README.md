@@ -1,4 +1,9 @@
 [![codecov](https://codecov.io/gh/javadebadi/google-cloud-sql-postgres-sqlalchemy/branch/main/graph/badge.svg)](https://codecov.io/gh/javadebadi/google-cloud-sql-postgres-sqlalchemy)
+[![PyPI version](https://badge.fury.io/py/google-cloud-sql-postgres-sqlalchemy.svg)](https://badge.fury.io/py/google-cloud-sql-postgres-sqlalchemy)
+[![Python Versions](https://img.shields.io/pypi/pyversions/google-cloud-sql-postgres-sqlalchemy.svg)](https://pypi.org/project/google-cloud-sql-postgres-sqlalchemy/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/javadebadi/google-cloud-sql-postgres-sqlalchemy/workflows/Continuous%20Integration/badge.svg)](https://github.com/javadebadi/google-cloud-sql-postgres-sqlalchemy/actions)
+[![Downloads](https://pepy.tech/badge/google-cloud-sql-postgres-sqlalchemy)](https://pepy.tech/project/google-cloud-sql-postgres-sqlalchemy)
 
 # Google Cloud SQL PostgreSQL SQLAlchemy
 
