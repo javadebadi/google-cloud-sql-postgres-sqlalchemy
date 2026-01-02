@@ -1,0 +1,78 @@
+# This workflow publishes the package to PyPI when a new version tag is pushed
+# Usage: git tag v0.1.0 && git push origin v0.1.0
+
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v0.1.0, v1.2.3, etc.
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          uv venv --python=3.14
+          uv sync --dev
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Remove 'v' prefix from tag to get version number
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Publishing version: $VERSION"
+
+      - name: Update version in pyproject.toml
+        run: |
+          # Update version in pyproject.toml to match the tag
+          sed -i 's/version = ".*"/version = "${{ steps.get_version.outputs.VERSION }}"/' pyproject.toml
+          cat pyproject.toml | grep version
+
+      - name: Run tests
+        run: |
+          uv run invoke code.ci
+
+      - name: Build package
+        run: |
+          uv run python -m build
+
+      - name: Publish to Test PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: |
+          uv run python -m twine upload --repository testpypi dist/* --skip-existing || true
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          uv run python -m twine upload dist/*
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
