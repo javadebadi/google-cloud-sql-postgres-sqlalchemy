@@ -125,6 +125,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Changelog
 
+### 0.2.2 (2026-01-02)
+- Add comprehensive unit tests achieving 100% test coverage
+- Add 13 tests for cloud_sql_proxy module covering all platforms
+- Add test for successful Cloud SQL connection creation
+- Update author email
+
 ### 0.2.1 (2026-01-02)
 - Fix GitHub Actions publish workflow permissions
 - Add comprehensive documentation for Cloud SQL Proxy utilities
