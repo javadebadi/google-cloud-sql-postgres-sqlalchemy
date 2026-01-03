@@ -92,12 +92,16 @@ def test(c: Context, path: str = ".", env: str = "TEST") -> None:
 
 
 @task(help={})
-def coverage(c: Context, path: str = "server", env: str = "TEST") -> None:
+def coverage(
+    c: Context,
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
+    env: str = "TEST",
+) -> None:
     """
     Run pytest coverage on test suite and generate HTML report.
 
     Args:
-        path: Coverage path (default: server)
+        path: Coverage path (default: google_cloud_sql_postgres_sqlalchemy)
         env: Environment variable value
     """
     c.run(f"export ENVIRONMENT={env};pytest --cov={path}", pty=True)
@@ -105,7 +109,11 @@ def coverage(c: Context, path: str = "server", env: str = "TEST") -> None:
 
 
 @task(help={})
-def coverage_open(c: Context, path: str = "server", env: str = "TEST") -> None:
+def coverage_open(
+    c: Context,
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
+    env: str = "TEST",
+) -> None:
     """
     Run pytest coverage, generate HTML report, and open in browser.
     """
@@ -134,7 +142,11 @@ def coverage_xml(
 
 
 @task(help={})
-def coverage_score(c: Context, path: str = "server", env: str = "TEST") -> None:
+def coverage_score(
+    c: Context,
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
+    env: str = "TEST",
+) -> None:
     """Get single coverage score as percentage."""
     cmd = (
         f"export ENVIRONMENT={env};"
@@ -166,7 +178,7 @@ def ci(c: Context, path: str = ".", env: str = "TEST") -> None:
 
 
 @task(help={})
-def security(c: Context, path: str = "server") -> None:
+def security(c: Context, path: str = "google_cloud_sql_postgres_sqlalchemy") -> None:
     """
     Run security scans on code and dependencies.
 
@@ -175,7 +187,7 @@ def security(c: Context, path: str = "server") -> None:
     - Dependency vulnerabilities with pip-audit
 
     Args:
-        path: Path to scan for security issues (default: server)
+        path: Path to scan for security issues (default: google_cloud_sql_postgres_sqlalchemy)
     """
     print("🔒 Running security scans...\n")
 
@@ -197,7 +209,7 @@ def security(c: Context, path: str = "server") -> None:
 
 @task(
     help={
-        "path": "Path to analyze (default: server)",
+        "path": "Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)",
         "max_complexity": "Maximum cyclomatic complexity (default: 15)",
         "min_maintainability": "Minimum maintainability index (default: 65)",
         "verbose": "Show detailed complexity report (default: False)",
@@ -205,7 +217,7 @@ def security(c: Context, path: str = "server") -> None:
 )
 def complexity(
     c: Context,
-    path: str = "server",
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
     max_complexity: int = 15,
     min_maintainability: int = 65,
     verbose: bool = False,
@@ -219,7 +231,7 @@ def complexity(
     - Shows functions/files that exceed thresholds
 
     Args:
-        path: Path to analyze (default: server)
+        path: Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)
         max_complexity: Max cyclomatic complexity threshold (default: 15)
         min_maintainability: Min maintainability index threshold (default: 65)
         verbose: Show detailed complexity report (default: False)
@@ -279,14 +291,14 @@ def complexity(
 
 @task(
     help={
-        "path": "Path to analyze (default: server)",
+        "path": "Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)",
         "min_confidence": "Minimum confidence for dead code (default: 80)",
         "strict": "Fail if dead code found (default: False)",
     },
 )
 def deadcode(
     c: Context,
-    path: str = "server",
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
     min_confidence: int = 80,
     strict: bool = False,
 ) -> None:
@@ -302,7 +314,7 @@ def deadcode(
     - Pytest fixtures (name-based detection)
 
     Args:
-        path: Path to analyze (default: server)
+        path: Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)
         min_confidence: Minimum confidence percentage (default: 80)
         strict: Fail CI if dead code found (default: False)
     """
@@ -343,14 +355,14 @@ def deadcode(
 
 @task(
     help={
-        "path": "Path to analyze (default: server)",
+        "path": "Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)",
         "min_coverage": "Minimum docstring coverage percentage (default: 80)",
         "strict": "Fail if coverage below threshold (default: False)",
     },
 )
 def docstrings(
     c: Context,
-    path: str = "server",
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
     min_coverage: int = 80,
     strict: bool = False,
 ) -> None:
@@ -361,7 +373,7 @@ def docstrings(
     By default runs in informational mode.
 
     Args:
-        path: Path to analyze (default: server)
+        path: Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)
         min_coverage: Minimum coverage percentage (default: 80)
         strict: Fail CI if coverage below threshold (default: False)
     """
@@ -405,7 +417,7 @@ def docstrings(
 
 @task(
     help={
-        "path": "Path to analyze (default: server)",
+        "path": "Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)",
         "min_coverage": "Minimum type coverage percentage (default: 80)",
         "open_report": "Open HTML report in browser (default: False)",
         "strict": "Fail if coverage below threshold (default: False)",
@@ -413,7 +425,7 @@ def docstrings(
 )
 def typecov(
     c: Context,
-    path: str = "server",
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
     min_coverage: int = 80,
     open_report: bool = False,
     strict: bool = False,
@@ -425,7 +437,7 @@ def typecov(
     annotations. Useful for tracking type safety improvements.
 
     Args:
-        path: Path to analyze (default: server)
+        path: Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)
         min_coverage: Minimum coverage percentage (default: 80)
         open_report: Open HTML report in browser (default: False)
         strict: Fail CI if coverage below threshold (default: False)
@@ -567,14 +579,14 @@ def licenses(
 
 @task(
     help={
-        "path": "Path to analyze (default: server)",
+        "path": "Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)",
         "min_lines": "Minimum duplicate lines to report (default: 5)",
         "strict": "Fail if duplicates found (default: False)",
     },
 )
 def duplication(
     c: Context,
-    path: str = "server",
+    path: str = "google_cloud_sql_postgres_sqlalchemy",
     min_lines: int = 5,
     strict: bool = False,
 ) -> None:
@@ -585,7 +597,7 @@ def duplication(
     maintenance issues when bugs need to be fixed in multiple places.
 
     Args:
-        path: Path to analyze (default: server)
+        path: Path to analyze (default: google_cloud_sql_postgres_sqlalchemy)
         min_lines: Minimum number of duplicate lines to report (default: 5)
         strict: Fail CI if duplicates found (default: False)
     """
