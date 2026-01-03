@@ -642,6 +642,24 @@ def clean(c: Context) -> None:
     c.run("rm -rf htmlcov")
     c.run("rm -rf .mypy-coverage")
     c.run("rm -rf *.egg-info")
+    c.run("rm -rf site")
+
+
+@task(help={})
+def docs(c: Context) -> None:
+    """Build documentation with MkDocs."""
+    print("📚 Building documentation...\n")
+    c.run("mkdocs build", pty=True)
+    print("\n✅ Documentation built successfully in site/")
+
+
+@task(help={})
+def docs_serve(c: Context) -> None:
+    """Serve documentation locally with live reload."""
+    print("📚 Starting documentation server...\n")
+    print("Documentation will be available at http://127.0.0.1:8000")
+    print("Press Ctrl+C to stop the server\n")
+    c.run("mkdocs serve", pty=True)
 
 
 # Create collection for export
@@ -664,5 +682,7 @@ ns.add_task(coverage)
 ns.add_task(coverage_open)
 ns.add_task(coverage_xml)
 ns.add_task(coverage_score)
+ns.add_task(docs)
+ns.add_task(docs_serve)
 
 __all__ = ["ns"]

@@ -45,6 +45,9 @@ coverage.xml
 .pytest_cache/
 .mypy-coverage/
 
+# Documentation
+site/
+
 # Virtual environments
 venv/
 ENV/
