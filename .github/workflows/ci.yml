@@ -60,6 +60,18 @@ jobs:
         run: |
           uv run invoke code.mypy
 
+      - name: Security scan
+        run: |
+          uv run invoke code.security --path=google_cloud_sql_postgres_sqlalchemy
+
+      - name: Complexity analysis
+        run: |
+          uv run invoke code.complexity --path=google_cloud_sql_postgres_sqlalchemy
+
+      - name: License compliance check
+        run: |
+          uv run invoke code.licenses
+
       - name: Test with pytest
         env:
           POSTGRES_HOST: localhost
