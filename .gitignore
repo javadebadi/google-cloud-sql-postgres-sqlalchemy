@@ -43,6 +43,7 @@ coverage.xml
 *.cover
 *.log
 .pytest_cache/
+.mypy-coverage/
 
 # Virtual environments
 venv/
