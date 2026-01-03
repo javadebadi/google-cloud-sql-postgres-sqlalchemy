@@ -187,7 +187,8 @@ def security(c: Context, path: str = "google_cloud_sql_postgres_sqlalchemy") -> 
     - Dependency vulnerabilities with pip-audit
 
     Args:
-        path: Path to scan for security issues (default: google_cloud_sql_postgres_sqlalchemy)
+        path: Path to scan for security issues
+              (default: google_cloud_sql_postgres_sqlalchemy)
     """
     print("🔒 Running security scans...\n")
 
